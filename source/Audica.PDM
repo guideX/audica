@@ -1,0 +1,253 @@
+[Root]
+Most Recent Package=Audica
+
+
+[Package|Audica 0.1|Root]
+SubWizProgID=PDWizard.SetupPkgSubWiz
+BuildFolder=C:\Documents and Settings\laiossa\My Documents\My Projects\Audica\Package
+
+[Package|Audica 0.1|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Audica 0.1|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Audica 0.1|Files Found]
+
+[Package|Audica 0.1|Files Released]
+
+[Package|Audica 0.1|Missing Dependency Information]
+C:\WINDOWS\SYSTEM32\Mp3Info.ocx=
+C:\WINDOWS\SYSTEM32\msdxm.ocx=
+C:\Documents and Settings\laiossa\My Documents\Samples\SpectrumTest\Spectre.ocx=
+
+[Package|Audica 0.1|Out-of-Date Dependency Information]
+
+[Package|Audica 0.1|Files Added]
+C:\Documents and Settings\laiossa\My Documents\My Projects\Team Nexgen Website\new\notice.htm=
+
+[Package|Audica 0.1|Files Removed]
+
+[Package|Audica 0.1|Files In Project]
+C:\Documents and Settings\laiossa\My Documents\My Projects\Audica\Audica.exe=Yes
+C:\WINDOWS\SYSTEM32\MSVBVM60.DLL=Yes
+C:\WINDOWS\SYSTEM32\oleaut32.dll=Yes
+C:\WINDOWS\SYSTEM32\olepro32.dll=Yes
+C:\WINDOWS\SYSTEM32\asycfilt.dll=Yes
+C:\WINDOWS\SYSTEM32\stdole2.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\Documents and Settings\laiossa\My Documents\Samples\SpectrumTest\Spectre.ocx=Yes
+C:\WINDOWS\SYSTEM32\msdxm.ocx=Yes
+C:\WINDOWS\SYSTEM32\Mp3Info.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=Yes
+C:\WINDOWS\SYSTEM32\VB6STKIT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=Yes
+C:\Documents and Settings\laiossa\My Documents\My Projects\Team Nexgen Website\new\notice.htm=Yes
+
+[Package|Audica 0.1|Configure Registry Files]
+Applicable=No
+
+[Package|Audica 0.1|Configure Remote Servers]
+Applicable=No
+
+[Package|Audica 0.1|Install Locations]
+C:\Documents and Settings\laiossa\My Documents\My Projects\Audica\Audica.exe=$(AppPath)
+C:\WINDOWS\SYSTEM32\MSVBVM60.DLL=$(WinSysPathSysFile)
+C:\WINDOWS\SYSTEM32\oleaut32.dll=$(WinSysPathSysFile)
+C:\WINDOWS\SYSTEM32\olepro32.dll=$(WinSysPathSysFile)
+C:\WINDOWS\SYSTEM32\asycfilt.dll=$(WinSysPathSysFile)
+C:\WINDOWS\SYSTEM32\stdole2.tlb=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\Documents and Settings\laiossa\My Documents\Samples\SpectrumTest\Spectre.ocx=$(WinSysPath)
+C:\WINDOWS\SYSTEM32\msdxm.ocx=$(WinSysPath)
+C:\WINDOWS\SYSTEM32\Mp3Info.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+C:\WINDOWS\SYSTEM32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+C:\Documents and Settings\laiossa\My Documents\My Projects\Team Nexgen Website\new\notice.htm=$(AppPath)
+
+[Package|Audica 0.1|Configure Shared Files]
+Applicable=Yes
+C:\Documents and Settings\laiossa\My Documents\My Projects\Audica\Audica.exe=No
+C:\Documents and Settings\laiossa\My Documents\My Projects\Team Nexgen Website\new\notice.htm=No
+
+[Package|Audica 0.1|Distribution]
+Type=single
+Size=
+Title=Nexgen Audica Beta 0.1
+
+[Package|Audica 0.1|IconGroups]
+Group0=Nexgen Audica Beta 0.1
+PrivateGroup0=True
+Parent0=$(Programs)
+
+[Package|Audica 0.1|Nexgen Audica Beta 0.1]
+Icon1=Audica.EXE
+Title1=Nexgen Audica Beta 0.1
+StartIn1=$(AppPath)
+Key1=Icon1
+Icon2=notice.htm
+Title2=Notice
+StartIn2=$(AppPath)
+Key2=Icon6
+
+[Package|Audica 0.1|Package]
+PackageFolder=C:\Documents and Settings\laiossa\My Documents\My Projects\Audica\Package
+ProjectFolder=C:\Documents and Settings\laiossa\My Documents\My Projects\Audica
+ServerSideCab=
+File1=C:\Documents and Settings\laiossa\My Documents\My Projects\Audica\Package\setup.exe
+File2=C:\Documents and Settings\laiossa\My Documents\My Projects\Audica\Package\Setup.Lst
+File3=C:\Documents and Settings\laiossa\My Documents\My Projects\Audica\Package\Audica.CAB
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+
+[Package|Audica|Audica PreBeta 0.4]
+Icon1=Audica.exe
+Title1=Audica PreBeta 0.4
+StartIn1=$(AppPath)
+Key1=Icon1
+
+[Package|Audica|Audica PreBeta 0.3]
+Icon1=Audica.exe
+Title1=Audica PreBeta 0.3
+StartIn1=$(AppPath)
+Key1=Icon1
+
+[Package|Audica|Audica PreBeta 0.2]
+Icon1=Audica.exe
+Title1=Audica PreBeta 0.2
+StartIn1=$(AppPath)
+Key1=Icon1
+
+[Package|Audica|Root]
+SubWizProgID=PDWizard.SetupPkgSubWiz
+BuildFolder=e:\Documents and Settings\Leon Aiossa\Desktop\Audica PKG
+
+[Package|Audica|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Audica|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Audica|Files Found]
+
+[Package|Audica|Files Released]
+
+[Package|Audica|Missing Dependency Information]
+C:\Documents and Settings\laiossa\My Documents\Samples\SpectrumTest\Spectre.ocx=
+C:\WINDOWS\SYSTEM32\Mp3play.ocx=
+C:\WINDOWS\SYSTEM32\Spectre.ocx=
+E:\WINXP\system32\Spectre.ocx=
+E:\WINXP\system32\Mp3play.ocx=
+
+[Package|Audica|Out-of-Date Dependency Information]
+
+[Package|Audica|Files Added]
+e:\documents and settings\leon aiossa\my documents\my projects\team nexgen website\new\privacy.htm=
+e:\documents and settings\leon aiossa\my documents\my projects\team nexgen website\new\notice.htm=
+
+[Package|Audica|Files Removed]
+
+[Package|Audica|Files In Project]
+E:\Documents and Settings\Leon Aiossa\My Documents\My Projects\Team Nexgen Website\new\privacy.htm=Yes
+E:\Documents and Settings\Leon Aiossa\My Documents\My Projects\Team Nexgen Website\new\notice.htm=Yes
+C:\Documents and Settings\laiossa\Desktop\Audica.exe=Yes
+C:\WINDOWS\SYSTEM32\MSVBVM60.DLL=Yes
+C:\WINDOWS\SYSTEM32\oleaut32.dll=Yes
+C:\WINDOWS\SYSTEM32\olepro32.dll=Yes
+C:\WINDOWS\SYSTEM32\asycfilt.dll=Yes
+C:\WINDOWS\SYSTEM32\stdole2.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\WINDOWS\SYSTEM32\Mp3play.ocx=Yes
+C:\WINDOWS\SYSTEM32\Spectre.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=Yes
+C:\WINDOWS\SYSTEM32\VB6STKIT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=Yes
+
+[Package|Audica|Configure Registry Files]
+Applicable=No
+
+[Package|Audica|Configure Remote Servers]
+Applicable=No
+
+[Package|Audica|Install Locations]
+C:\Documents and Settings\laiossa\Desktop\Audica.exe=$(AppPath)
+C:\WINDOWS\SYSTEM32\MSVBVM60.DLL=$(WinSysPathSysFile)
+C:\WINDOWS\SYSTEM32\oleaut32.dll=$(WinSysPathSysFile)
+C:\WINDOWS\SYSTEM32\olepro32.dll=$(WinSysPathSysFile)
+C:\WINDOWS\SYSTEM32\asycfilt.dll=$(WinSysPathSysFile)
+C:\WINDOWS\SYSTEM32\stdole2.tlb=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\WINDOWS\SYSTEM32\Mp3play.ocx=$(WinSysPath)
+C:\Documents and Settings\laiossa\My Documents\Samples\SpectrumTest\Spectre.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+C:\WINDOWS\SYSTEM32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+C:\Documents and Settings\laiossa\My Documents\Audica.exe=$(AppPath)
+C:\WINDOWS\SYSTEM32\Spectre.ocx=$(WinSysPath)
+E:\Documents and Settings\Leon Aiossa\Desktop\Audica.exe=$(AppPath)
+E:\WINXP\system32\msvbvm60.dll=$(WinSysPathSysFile)
+E:\WINXP\system32\oleaut32.dll=$(WinSysPathSysFile)
+E:\WINXP\system32\olepro32.dll=$(WinSysPathSysFile)
+E:\WINXP\system32\asycfilt.dll=$(WinSysPathSysFile)
+E:\WINXP\system32\stdole2.tlb=$(WinSysPathSysFile)
+E:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+E:\WINXP\system32\Mp3play.ocx=$(WinSysPath)
+E:\WINXP\system32\Spectre.ocx=$(WinSysPath)
+E:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+E:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+E:\WINXP\system32\VB6STKIT.DLL=$(WinSysPathSysFile)
+E:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+E:\Documents and Settings\Leon Aiossa\Desktop\New Folder\Audica.exe=$(AppPath)
+E:\Documents and Settings\Leon Aiossa\My Documents\My Projects\Team Nexgen Website\new\privacy.htm=$(AppPath)
+E:\Documents and Settings\Leon Aiossa\My Documents\My Projects\Team Nexgen Website\new\notice.htm=$(AppPath)
+
+[Package|Audica|Configure Shared Files]
+Applicable=Yes
+C:\Documents and Settings\laiossa\Desktop\Audica.exe=No
+C:\Documents and Settings\laiossa\My Documents\Audica.exe=No
+E:\Documents and Settings\Leon Aiossa\Desktop\Audica.exe=No
+E:\Documents and Settings\Leon Aiossa\Desktop\New Folder\Audica.exe=No
+E:\Documents and Settings\Leon Aiossa\My Documents\My Projects\Team Nexgen Website\new\privacy.htm=No
+E:\Documents and Settings\Leon Aiossa\My Documents\My Projects\Team Nexgen Website\new\notice.htm=No
+
+[Package|Audica|Distribution]
+Type=single
+Size=
+Title=Nexgen Audica 0.5c
+
+[Package|Audica|Package]
+PackageFolder=e:\Documents and Settings\Leon Aiossa\Desktop\Audica PKG
+ProjectFolder=E:\Documents and Settings\Leon Aiossa\My Documents\My Projects\Audica
+ServerSideCab=
+File1=e:\Documents and Settings\Leon Aiossa\Desktop\Audica PKG\setup.exe
+File2=e:\Documents and Settings\Leon Aiossa\Desktop\Audica PKG\Setup.Lst
+File3=e:\Documents and Settings\Leon Aiossa\Desktop\Audica PKG\Audica.CAB
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+[Package|Audica|IconGroups]
+Group0=Audica Beta 0.5
+PrivateGroup0=True
+Parent0=$(Programs)
+
+[Package|Audica|Audica Beta 0.5]
+Icon1=notice.htm
+Title1=AGREEMENT
+StartIn1=$(AppPath)
+Key1=Icon2
+Icon2=privacy.htm
+Title2=YOUR PRIVACY
+StartIn2=$(AppPath)
+Key2=Icon3
+Icon3=Audica.exe
+Title3=RUN.AUDICA
+StartIn3=$(AppPath)
+Key3=Icon1
