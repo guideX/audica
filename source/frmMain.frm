@@ -103,12 +103,12 @@ Begin VB.Form frmMain
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00C0C000&
-      Height          =   165
+      Height          =   900
       Left            =   720
       TabIndex        =   1
       Top             =   2160
       Visible         =   0   'False
-      Width           =   1395
+      Width           =   1305
       WordWrap        =   -1  'True
    End
    Begin VB.Image imgSmEject 
@@ -186,12 +186,14 @@ Begin VB.Form frmMain
       Begin VB.Menu mnuUtility 
          Caption         =   "::PLAYLIST::"
          Shortcut        =   {F5}
+         Visible         =   0   'False
       End
       Begin VB.Menu mnuSep98372973892 
          Caption         =   "-"
       End
       Begin VB.Menu mnuSettings 
          Caption         =   "::SETTINGS::"
+         Visible         =   0   'False
          Begin VB.Menu mnuOS 
             Caption         =   "::OPERATING><SYSTEM::"
          End
@@ -236,6 +238,7 @@ Begin VB.Form frmMain
          End
          Begin VB.Menu mnuWavFiles 
             Caption         =   "::WAV.FILE(S)::"
+            Visible         =   0   'False
             Begin VB.Menu mnuPlayFile 
                Caption         =   "::PLAY.FILE::"
             End
@@ -305,10 +308,12 @@ Begin VB.Form frmMain
          End
          Begin VB.Menu mnuSep3872937 
             Caption         =   "-"
+            Visible         =   0   'False
          End
          Begin VB.Menu mnuPlayerSettings 
             Caption         =   "::PLAYER.SETTINGS::"
             Enabled         =   0   'False
+            Visible         =   0   'False
          End
       End
       Begin VB.Menu mnuPause 
@@ -475,23 +480,10 @@ Mp3OCX1.RightChanColor = &H800000
 Mp3OCX1.LeftChanColor = &HFF0000
 Mp3OCX1.Bands = 14
 lInterface.iOS = GetSetting(App.Title, "Settings", "OS", 0)
-If lInterface.iOS = 0 Then
-    frmSelectOS.Show 1
-    If lInterface.iOS = 0 Then End
-End If
 lSettings.sOutputDevice = GetSetting(App.Title, "Settings", "OutputDevice", 100)
-If lSettings.sOutputDevice = 100 Then
-    frmOutputDevice.Show 1
-End If
 SetInterface eAboutWindow, False, True
 Pause 2
 FadeOut
-If GetSetting(App.Title, "Settings", "FirstRun", "True") = "True" Then
-    If DoesFileExist(App.Path & "\audicaintro.mp3") = True Then
-        SaveSetting App.Title, "Settings", "FirstRun", "False"
-        PlayMp3 App.Path & "\audicaintro.mp3"
-    End If
-End If
 LoadPlaylist
 Pause 0.2
 imgSlider.Left = 186
@@ -525,19 +517,8 @@ Private Sub imgLayout_MouseDown(Button As Integer, Shift As Integer, X As Single
 If Button = 1 Then
     FormDrag Me
 Else
-    'If lInterface.iPlaying = True Then
-        'lInterface.iPauseLayout = True
-        'ctlMp3Player.Pause
-    'End If
     PopupMenu mnuMain
 End If
-End Sub
-
-Private Sub imgLayout_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-'If lInterface.iPauseLayout = True Then
-    'Mp3OCX1.Pause
-    'lInterface.iPauseLayout = False
-'End If
 End Sub
 
 Private Sub imgSmBack_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -687,11 +668,6 @@ End Sub
 
 Private Sub mnuOpenMp3Directory_Click()
 PlayDirectory Mp3_File
-End Sub
-
-Private Sub mnuOutputDevice_Click()
-On Error Resume Next
-frmOutputDevice.Show
 End Sub
 
 Private Sub mnuPlayFile_Click()

@@ -18,7 +18,7 @@ Private mCol As Collection
 Public Function Add( _
       Description As String, _
       Identifier As String _
-   ) As Genre
+   ) As clsGenre
 
 On Error GoTo AddError
 
@@ -27,9 +27,9 @@ On Error GoTo AddError
 'exists within the collection
    Const ITEM_EXISTS_ERR_NUMBER  As Integer = 457
 
-   Dim objNewMember              As Genre
+   Dim objNewMember              As clsGenre
 
-   Set objNewMember = New Genre
+   Set objNewMember = New clsGenre
 
    'set the properties passed into the method
    With objNewMember
@@ -67,7 +67,7 @@ Public Function Exists( _
 
 On Error GoTo ExistsError
 
-   Dim objTest As Genre
+   Dim objTest As clsGenre
 
    Exists = True
 
@@ -81,7 +81,7 @@ ExistsError:
 End Function
 Public Property Get Item( _
       vntIndexKey As Variant _
-   ) As Genre
+   ) As clsGenre
 'used when referencing an element in the collection
 'vntIndexKey contains either the Index or Key to the collection,
 'this is why it is declared as a Variant
@@ -105,14 +105,14 @@ Public Sub Remove(vntIndexKey As Variant)
    mCol.Remove vntIndexKey
 
 End Sub
-Public Property Get NewEnum() As IUnknown
+'Public Property Get NewEnum() As IUnknown
 'this property allows you to enumerate
 'this collection with the For...Each syntax
 'eg For Each objMember In objCollection
 
-   Set NewEnum = mCol.[_NewEnum]
+   'Set NewEnum = mCol.[_NewEnum]
 
-End Property
+'End Property
 Private Sub Class_Initialize()
 
 'creates the collection when this class is created

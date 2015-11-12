@@ -1,13 +1,11 @@
 mdlTypes = 220, 220, 903, 864, C
 mdlDeclares = 66, 66, 749, 710, C
-mdlSubs = 10, 59, 933, 830, 
+mdlSubs = 10, 59, 933, 830, C
 mdlCommonDlg = 198, 198, 881, 842, C
 mdlFunctions = 132, 174, 926, 829, C
-frmMain = 19, 66, 874, 786, , 98, 86, 663, 717, C
-frmShare = 263, 329, 906, 924, C, 162, 163, 731, 564, C
-mdlShare = 45, 155, 839, 811, C
+frmMain = 19, 66, 874, 786, C, 98, 86, 663, 717, C
 frmFolder = 44, 58, 838, 713, C, 316, 277, 634, 666, C
 frmDir = 22, 29, 816, 684, C, 108, 169, 458, 425, C
 frmGFX = 0, 0, 0, 0, C, -3, 124, 639, 798, C
-frmSelectOS = 0, 0, 0, 0, C, 66, 87, 260, 354, C
-frmOutputDevice = 110, 145, 819, 800, , 88, 116, 353, 506, C
+clsGenre = 0, 0, 0, 0, C
+clsGenres = 0, 0, 0, 0, C
