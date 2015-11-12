@@ -73,8 +73,8 @@ Private Sub cmdCancel_Click()
 Unload Me
 End Sub
 
-Private Sub cmdOk_Click()
-lFileshare.fReturn = Dir1.Path
+Private Sub cmdOK_Click()
+'lFileshare.fReturn = Dir1.Path
 Unload Me
 End Sub
 

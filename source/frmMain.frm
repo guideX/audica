@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{3B00B10A-6EF0-11D1-A6AA-0020AFE4DE54}#1.0#0"; "Mp3play.ocx"
+Object = "{EEB96F74-14D2-11D3-A1BB-B6FC7F000000}#1.0#0"; "Mp3OCX.ocx"
 Begin VB.Form frmMain 
-   BackColor       =   &H00808080&
+   BackColor       =   &H00FF0000&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Audica"
    ClientHeight    =   7650
@@ -59,17 +59,18 @@ Begin VB.Form frmMain
          Left            =   600
          Top             =   120
       End
-      Begin MPEGPLAYLib.Mp3Play ctlMp3Player 
-         Height          =   735
-         Left            =   1080
-         TabIndex        =   1
-         Top             =   120
-         Width           =   735
-         _Version        =   65536
-         _ExtentX        =   1296
-         _ExtentY        =   1296
-         _StockProps     =   0
-      End
+   End
+   Begin MP3OCXLib.Mp3OCX Mp3OCX1 
+      Height          =   1095
+      Left            =   840
+      TabIndex        =   2
+      Top             =   840
+      Width           =   1230
+      _Version        =   65536
+      _ExtentX        =   2170
+      _ExtentY        =   1931
+      _StockProps     =   161
+      BackColor       =   0
    End
    Begin VB.Image imgSmPlay 
       Height          =   375
@@ -104,7 +105,7 @@ Begin VB.Form frmMain
       ForeColor       =   &H00C0C000&
       Height          =   165
       Left            =   720
-      TabIndex        =   2
+      TabIndex        =   1
       Top             =   2160
       Visible         =   0   'False
       Width           =   1395
@@ -169,10 +170,12 @@ Begin VB.Form frmMain
       Begin VB.Menu mnuNexENCODE 
          Caption         =   "::NEXENCODE::"
          Shortcut        =   {F2}
+         Visible         =   0   'False
       End
       Begin VB.Menu mnuNexMEDIA 
          Caption         =   "::NEXMEDIA::"
          Shortcut        =   {F3}
+         Visible         =   0   'False
       End
       Begin VB.Menu mnuNexSynth 
          Caption         =   "::NEXSYNTH::"
@@ -452,12 +455,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Option Explicit
-
-Private Sub ctlMp3Player_Failure(ByVal ErrorCode As Long, ByVal ErrStr As String)
-MsgBox "The Audica mp3 player reached a failure playing the current media. This may have been caused by an incorrect output device specification." & vbCrLf & ErrStr
-CloseMp3Player
-End Sub
+Option Explicit
 
 Private Sub ctlMp3Player_ThreadEnded()
 tmrStreamTitle.Enabled = False
@@ -468,37 +466,32 @@ If lInterface.iStoped = False And lPlaylist.pCount <> 0 And lPlaylist.pCount <> 
 End Sub
 
 Private Sub Form_Load()
-'On Error Resume Next
-Dim i As Integer, msg As String, x As Integer
+On Error Resume Next
+Dim i As Integer, msg As String, X As Integer
 Me.BackColor = vbBlack
-
+Mp3OCX1.OscilloType = otSpectrum
+Mp3OCX1.BackColor = 0
+Mp3OCX1.RightChanColor = &H800000
+Mp3OCX1.LeftChanColor = &HFF0000
+Mp3OCX1.Bands = 14
 lInterface.iOS = GetSetting(App.Title, "Settings", "OS", 0)
 If lInterface.iOS = 0 Then
     frmSelectOS.Show 1
     If lInterface.iOS = 0 Then End
 End If
-'Left = GetSetting(App.Title, "Main", "Left", Left)
-'Top = GetSetting(App.Title, "Main", "Top", Top)
-
 lSettings.sOutputDevice = GetSetting(App.Title, "Settings", "OutputDevice", 100)
 If lSettings.sOutputDevice = 100 Then
     frmOutputDevice.Show 1
 End If
-
 SetInterface eAboutWindow, False, True
 Pause 2
 FadeOut
-
 If GetSetting(App.Title, "Settings", "FirstRun", "True") = "True" Then
     If DoesFileExist(App.Path & "\audicaintro.mp3") = True Then
         SaveSetting App.Title, "Settings", "FirstRun", "False"
         PlayMp3 App.Path & "\audicaintro.mp3"
     End If
 End If
-
-ctlMp3Player.Authorize "Leon J Aiossa", "812144397"
-'Spectrum1.FrameRate = 50
-'Spectrum1.StartWatch
 LoadPlaylist
 Pause 0.2
 imgSlider.Left = 186
@@ -506,7 +499,6 @@ imgSlider.Visible = True
 InitDisplay
 Dim lfname As String
 lfname = Command
-MsgBox lfname
 If Len(lfname) <> 0 Then
     PlayMp3 lfname
 End If
@@ -514,7 +506,6 @@ End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
 Dim i As Integer
-
 CloseMp3Player
 DoEvents
 SaveSettings
@@ -530,41 +521,41 @@ Else
 End If
 End Sub
 
-Private Sub imgLayout_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgLayout_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
     FormDrag Me
 Else
-    If lInterface.iPlaying = True Then
-        lInterface.iPauseLayout = True
-        ctlMp3Player.Pause
-    End If
+    'If lInterface.iPlaying = True Then
+        'lInterface.iPauseLayout = True
+        'ctlMp3Player.Pause
+    'End If
     PopupMenu mnuMain
 End If
 End Sub
 
-Private Sub imgLayout_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
-If lInterface.iPauseLayout = True Then
-    ctlMp3Player.Pause
-    lInterface.iPauseLayout = False
-End If
+Private Sub imgLayout_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+'If lInterface.iPauseLayout = True Then
+    'Mp3OCX1.Pause
+    'lInterface.iPauseLayout = False
+'End If
 End Sub
 
-Private Sub imgSmBack_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmBack_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then imgSmBack.Picture = frmGFX.imgSmBack2.Picture
 End Sub
 
-Private Sub imgSmBack_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmBack_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
     GoBack
     imgSmBack.Picture = frmGFX.imgSmBack1.Picture
 End If
 End Sub
 
-Private Sub imgSmEject_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmEject_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then imgSmEject.Picture = frmGFX.imgSmEject2.Picture
 End Sub
 
-Private Sub imgSmEject_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmEject_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
     CloseMp3Player
     PlayMp3
@@ -572,48 +563,47 @@ If Button = 1 Then
 End If
 End Sub
 
-Private Sub imgSmNext_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmNext_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then imgSmNext.Picture = frmGFX.imgSmNext2.Picture
 End Sub
 
-Private Sub imgSmNext_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmNext_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
     GoNext
     imgSmNext.Picture = frmGFX.imgSmNext1.Picture
 End If
 End Sub
 
-Private Sub imgSmOptions_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmOptions_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then imgSmOptions.Picture = frmGFX.imgSmOptions2.Picture
 End Sub
 
-Private Sub imgSmOptions_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmOptions_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
     SetInterface eUtilityWindow, True
     imgSmOptions.Picture = frmGFX.imgSmOptions1.Picture
 End If
 End Sub
 
-Private Sub imgSmPause_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmPause_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then imgSmPause.Picture = frmGFX.imgSmPause2.Picture
 End Sub
 
-Private Sub imgSmPause_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmPause_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
     imgSmPause.Picture = frmGFX.imgSmPause1.Picture
-    
     If lInterface.iPlaying = True Then
         If tmrFake.Enabled = False Then
             tmrFake.Enabled = True
         Else
             tmrFake.Enabled = False
         End If
-        ctlMp3Player.Pause
+        Mp3OCX1.Pause
     End If
 End If
 End Sub
 
-Private Sub imgSmPlay_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmPlay_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
     If imgSmPlay.Picture = frmGFX.imgSmPlay1.Picture Then
         imgSmPlay.Picture = frmGFX.imgSmPlay2.Picture
@@ -625,7 +615,7 @@ If Button = 1 Then
 End If
 End Sub
 
-Private Sub imgSmPlay_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmPlay_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
     imgSmPause.Enabled = True
     If imgSmPlay.Picture = frmGFX.imgSmPlay2.Picture Then
@@ -648,27 +638,24 @@ If Button = 1 Then
 End If
 End Sub
 
-Private Sub imgSmVol_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
-'imgSlider.Left = imgSmVol.Left + 20
-'imgSlider.Top = imgSmVol.Top + 20
-'imgSlider.Visible = True
+Private Sub imgSmVol_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+imgSlider.Left = imgSmVol.Left + 20
+imgSlider.Top = imgSmVol.Top + 20
+imgSlider.Visible = True
 End Sub
 
-Private Sub imgSmVol_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSmVol_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
     imgSlider.Top = Y / 14 + 110
-    'If Y < 500 Then
-    '    imgSlider.Left = imgSlider.Left + 1
-   ' Else
-    '    imgSlider.Left = imgSlider.Left - 1
-    'End If
-        
-    
-    lblFileInfo.Caption = x & " " & Y
+    If Y < 500 Then
+        imgSlider.Left = imgSlider.Left + 1
+    Else
+        imgSlider.Left = imgSlider.Left - 1
+    End If
 End If
 End Sub
 
-Private Sub lblFileInfo_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub lblFileInfo_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 FormDrag Me
 End Sub
 
@@ -698,16 +685,8 @@ Private Sub mnuMinimize_Click()
 WindowState = vbMinimized
 End Sub
 
-Private Sub mnuNexENCODE_Click()
-Shell App.Path & "\NexENCODE.exe", vbNormalFocus
-End Sub
-
 Private Sub mnuOpenMp3Directory_Click()
 PlayDirectory Mp3_File
-End Sub
-
-Private Sub mnuOS_Click()
-frmSelectOS.Show 1
 End Sub
 
 Private Sub mnuOutputDevice_Click()
@@ -716,7 +695,6 @@ frmOutputDevice.Show
 End Sub
 
 Private Sub mnuPlayFile_Click()
-'PlayWav
 sndPlaySound OpenDialog(frmMain, "Wav Files (*.wav)|*.wav|All Files (*.*)|*.*", "Open", CurDir), SND_ASYNC
 End Sub
 
@@ -748,7 +726,6 @@ End Sub
 
 Private Sub mnuRecient_Click(Index As Integer)
 Dim i As Integer, msg As String
-
 msg = Left(mnuRecient(Index).Caption, Len(mnuRecient(Index).Caption) - 2)
 msg = LCase(Right(msg, Len(msg) - 2))
 i = FindPlaylistIndex(msg)

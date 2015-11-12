@@ -52,9 +52,10 @@ End Function
 
 Public Sub CloseMp3Player()
 lInterface.iStoped = True
-frmMain.ctlMp3Player.Stop
-frmMain.ctlMp3Player.Close
-frmMain.ctlMp3Player.SetOutDevice lSettings.sOutputDevice
+frmMain.Mp3OCX1.Stop
+'frmMain.ctlMp3Player.Stop
+'frmMain.ctlMp3Player.Close
+'frmMain.ctlMp3Player.SetOutDevice lSettings.sOutputDevice
 frmMain.lblFileInfo.Caption = ""
 frmMain.tmrStreamTitle.Enabled = False
 frmMain.tmrFake.Enabled = False
@@ -133,12 +134,12 @@ End Sub
 
 Public Sub LoadPlaylist()
 On Local Error Resume Next
-Dim i As Integer, x As Integer, msg As String
+Dim i As Integer, X As Integer, msg As String
 
 lPlaylist.pFilename = GetSetting(App.Title, "Playlist", "Filename", App.Path & "\" & "audica.m3u")
-x = GetSetting(App.Title, "Playlist", "Count", 0)
-If x <> 0 Then
-    For i = 1 To x
+X = GetSetting(App.Title, "Playlist", "Count", 0)
+If X <> 0 Then
+    For i = 1 To X
         msg = GetSetting(App.Title, "Playlist", i, "")
         If Len(msg) <> 0 Then AddtoPlaylist msg
     Next i
@@ -211,19 +212,19 @@ Public Sub SetNexENCODEShape()
 Dim i As Integer
 
 Dim rgn As Long, rgn1 As Long, rgn2 As Long, rgn3 As Long, rgn4 As Long, rgn5 As Long, rgn6 As Long, rgn7 As Long, tmp As Long
-Dim x As Long, Y As Long
+Dim X As Long, Y As Long
 
-x = lMainWndSettings.wWindowBorder
+X = lMainWndSettings.wWindowBorder
 Y = lMainWndSettings.wTitleBarHeight
 
 rgn = CreateEllipticRgn(0, 0, frmMain.Width, frmMain.Height) ' whole image
-rgn1 = CreateEllipticRgn(x + 147, Y + 90, x + 326, Y + 267) 'big crl in back (transparency)
-rgn2 = CreateEllipticRgn(x + 104, Y + 46, x + 367, Y + 310) ' big crl in back
-rgn3 = CreateEllipticRgn(x + 48, Y + 74, x + 257, Y + 287) 'left crl
-rgn4 = CreateEllipticRgn(x + 65, Y + 92, x + 241, Y + 268) 'left crl (transperancy)
-rgn5 = CreateEllipticRgn(x + 212, Y + 72, x + 422, Y + 286) 'right crl
-rgn6 = CreateEllipticRgn(x + 230, Y + 91, x + 404, Y + 268) 'right crl (transparency)
-rgn7 = CreateRoundRectRgn(x + 39, Y + 120, x + 429, Y + 237, 110, 110)  'pill
+rgn1 = CreateEllipticRgn(X + 147, Y + 90, X + 326, Y + 267) 'big crl in back (transparency)
+rgn2 = CreateEllipticRgn(X + 104, Y + 46, X + 367, Y + 310) ' big crl in back
+rgn3 = CreateEllipticRgn(X + 48, Y + 74, X + 257, Y + 287) 'left crl
+rgn4 = CreateEllipticRgn(X + 65, Y + 92, X + 241, Y + 268) 'left crl (transperancy)
+rgn5 = CreateEllipticRgn(X + 212, Y + 72, X + 422, Y + 286) 'right crl
+rgn6 = CreateEllipticRgn(X + 230, Y + 91, X + 404, Y + 268) 'right crl (transparency)
+rgn7 = CreateRoundRectRgn(X + 39, Y + 120, X + 429, Y + 237, 110, 110)  'pill
 
 tmp = CombineRgn(rgn1, rgn2, rgn1, RGN_DIFF) ' back crl
 tmp = CombineRgn(rgn3, rgn3, rgn4, RGN_DIFF) ' left crl
@@ -347,7 +348,10 @@ Case eSmWindow
         .imgSmPause.Visible = True
         .imgSmNext.Visible = True
         .imgSmBack.Visible = True
-    
+        .lblFileInfo.Visible = True
+        .imgSlider.Visible = True
+        .imgSmVol.Visible = True
+        .Mp3OCX1.Visible = True
     End With
     FadeIn lInitVis
 
@@ -372,6 +376,10 @@ Case eUtilityWindow
         .mnuAudica.Checked = False
         .mnuUtility.Checked = True
         .mnuNexENCODE.Checked = False
+        .lblFileInfo.Visible = False
+        .imgSlider.Visible = False
+        .imgSmVol.Visible = False
+        .Mp3OCX1.Visible = False
     End With
     FadeIn
 Case eAboutWindow
@@ -382,6 +390,7 @@ Case eAboutWindow
     GetWindowSettings frmMain.hwnd
     SetAboutShape
     With frmMain
+        .Mp3OCX1.Visible = False
         .imgLayout.Picture = frmGFX.imgAbout.Picture
         .imgLayout.Top = 0
         .imgLayout.Left = 0
@@ -392,22 +401,22 @@ End Select
 End Sub
 
 Public Sub FadeOut()
-Dim x As Integer, i As Integer
-x = 100
+Dim X As Integer, i As Integer
+X = 100
 For i = 1 To 5
-    x = x - 20
-    MakeTransparent frmMain.hwnd, x
+    X = X - 20
+    MakeTransparent frmMain.hwnd, X
     DoEvents
 Next i
 End Sub
 
 Public Sub FadeIn(Optional InitVis As Boolean)
-Dim i As Integer, x As Integer
-x = 0
+Dim i As Integer, X As Integer
+X = 0
 If InitVis = True Then frmMain.Visible = True
 For i = 1 To 5
-    x = x + 20
-    MakeTransparent frmMain.hwnd, x
+    X = X + 20
+    MakeTransparent frmMain.hwnd, X
     DoEvents
 Next i
 MakeOpaque frmMain.hwnd
@@ -431,6 +440,40 @@ Else
 End If
 End Sub
 
+Public Sub Playfile(lIndex As Integer, lFiletype As eFiletypes)
+On Local Error Resume Next
+Dim msg As String, lFilename As String
+lFilename = lPlaylist.pFiles(lIndex).fFilepath & "\" & lPlaylist.pFiles(lIndex).fFilename
+If DoesFileExist(lFilename) = False Then
+    msg = MsgBox("Audica cannot locate '" & lFilename & "'. Would you like to search for this file yourself?", vbYesNo + vbExclamation)
+    If msg = vbYes Then
+        PlayMp3
+        Exit Sub
+    Else
+        Exit Sub
+    End If
+End If
+If lIndex = 0 Then
+    Exit Sub
+Else
+    Select Case lFiletype
+    Case Mp3_File
+        'If frmMain.ctlMp3Player.GetHasTag = True Then
+            'frmDDE.ddemIRC "10:12( 10Title: 12" & frmMain.ctlMp3Player.GetTitle & "10, Artist: 12" & frmMain.ctlMp3Player.GetArtist & ", 9[14" & frmMain.ctlMp3Player.GetGenreString(frmMain.ctlMp3Player.GetGenre) & "9] 0.11aud15ic14a" & " 12)10:"
+        'Else
+            'frmDDE.ddemIRC "10:12( 10Playing: 12" & lPlaylist.pFiles(lIndex).fFilename & "9] 0.11aud15ic14a" & " 12)10:"
+        'End If
+      
+    'Case Wav_File
+        'lPlaylist.pCurrent = FindPlaylistIndex(GetFileTitle(lPlaylist.pFiles(lIndex).fFilename))
+        'frmMain.imgSmPlay.Picture = frmGFX.imgSmStop1.Picture
+        'sndPlaySound lPlaylist.pFiles(lIndex).fFilepath & "\" & lPlaylist.pFiles(lIndex).fFilename, SND_ASYNC
+        'lInterface.iPlaying = True
+        'frmMain.tmrStreamTitle.Enabled = True
+    End Select
+End If
+End Sub
+
 Public Sub PlayWav(Optional lWavFile As String)
 Dim msg As String, i As Integer
 
@@ -450,7 +493,7 @@ End If
 End Sub
 
 Public Sub GoNext()
-Dim i As Integer, msg As String, x As Integer
+Dim i As Integer, msg As String, X As Integer
 frmMain.lblFileInfo.Caption = "Loading ..."
 CloseMp3Player
 DoEvents
@@ -458,10 +501,10 @@ Pause 0.2
 If lPlaylist.pCount = 0 Or lPlaylist.pCount = 1 Then Exit Sub
 If frmMain.mnuRandomize.Checked = True Then
 Rand:
-    x = GetRnd(lPlaylist.pCount)
-    If Len(lPlaylist.pFiles(x).fFilename) <> 0 Then
-        If x <> lPlaylist.pCurrent Then
-            lPlaylist.pCurrent = x
+    X = GetRnd(lPlaylist.pCount)
+    If Len(lPlaylist.pFiles(X).fFilename) <> 0 Then
+        If X <> lPlaylist.pCurrent Then
+            lPlaylist.pCurrent = X
             msg = lPlaylist.pFiles(lPlaylist.pCurrent).fFilepath & "\" & lPlaylist.pFiles(lPlaylist.pCurrent).fFilename
             OpenFile msg
             Playfile lPlaylist.pCurrent, Mp3_File
@@ -520,119 +563,56 @@ End Sub
 
 Public Function OpenFile(lFilename As String) As Integer
 On Local Error Resume Next
-
-Dim msg As String, msg2 As String, i As Integer, msg3 As String, lext As String, lFile As String, x As Integer
+Dim msg As String, msg2 As String, i As Integer, msg3 As String, lext As String, lFile As String, X As Integer
 If Len(lFilename) <> 0 Then
     lFile = lFilename
     lext = Right(LCase(lFilename), 3)
     msg2 = GetFileTitle(lFile)
     i = FindPlaylistIndex(msg2)
-    If i = 0 Then x = AddtoPlaylist(lFilename)
-    
+    If i = 0 Then X = AddtoPlaylist(lFilename)
     Select Case lext
     Case "mp3"
         With frmMain
-            CloseMp3Player
-            .ctlMp3Player.Open Trim(lFilename), ""
-            DoEvents
-            msg = .ctlMp3Player.GetArtist & " - " & .ctlMp3Player.GetTitle
-            If msg = " - " Then
-                msg3 = GetFileTitle(lFilename)
-                lInterface.iStatusText = " " & Left(msg3, Len(msg3) - 4) & " ...   "
-            Else
-                lInterface.iStatusText = " " & msg & " ...   "
-            End If
+            mdlID3.ms_InitialiseGenres
+            Dim t As Id3Tag
+            t = mdlID3.ms_ShowID3V1Tag(lFilename)
+            Dim msg20 As String
+            msg20 = Right(t.Title, 1)
+            lInterface.iStatusText = Replace(Trim(t.Title), Chr(0), "") & " by " & Replace(Trim(t.Artist), Chr(0), "") & " album " & Replace(Trim(t.Album), Chr(0), "") & " " & Replace(Trim(t.Genre), Chr(0), "")
+            lInterface.iStoped = False
+            frmMain.tmrFake.Enabled = True
+            lPlaylist.pCurrent = FindPlaylistIndex(GetFileTitle(lFilename))
+            frmMain.imgSmPlay.Picture = frmGFX.imgSmStop1.Picture
+            lInterface.iPlaying = True
+            frmMain.tmrStreamTitle.Enabled = True
+            .Mp3OCX1.Play lFilename
+            frmMain.tmrStreamTitle.Enabled = True
         End With
-    Case "mp2"
-        With frmMain
-            CloseMp3Player
-            .ctlMp3Player.Open Trim(lFilename), ""
-            DoEvents
-            msg = .ctlMp3Player.GetArtist & " - " & .ctlMp3Player.GetTitle
-            If msg = " - " Then
-                msg3 = GetFileTitle(lFilename)
-                lInterface.iStatusText = " " & Left(msg3, Len(msg3) - 4) & " ...   "
-            Else
-                lInterface.iStatusText = " " & msg & " ...   "
-            End If
-        End With
-    Case "mp1"
-        With frmMain
-            CloseMp3Player
-            .ctlMp3Player.Open Trim(lFilename), ""
-            DoEvents
-            msg = .ctlMp3Player.GetArtist & " - " & .ctlMp3Player.GetTitle
-            If msg = " - " Then
-                msg3 = GetFileTitle(lFilename)
-                lInterface.iStatusText = " " & Left(msg3, Len(msg3) - 4) & " ...   "
-            Else
-                lInterface.iStatusText = " " & msg & " ...   "
-            End If
-        End With
-    Case "wav"
-        msg = Left(lFilename, Len(lFilename) - 4)
-        If Len(msg) <> 0 Then lInterface.iStatusText = " " & msg & " ...   "
     End Select
-    OpenFile = x
+    OpenFile = X
 End If
 End Function
 
-Public Sub Playfile(lIndex As Integer, lFiletype As eFiletypes)
-On Local Error Resume Next
+Function AlphaNumericOnly(strSource As String) As String
+    Dim i As Integer
+    Dim strResult As String
 
-Dim msg As String, lFilename As String
-lFilename = lPlaylist.pFiles(lIndex).fFilepath & "\" & lPlaylist.pFiles(lIndex).fFilename
-If DoesFileExist(lFilename) = False Then
-    msg = MsgBox("Audica cannot locate '" & lFilename & "'. Would you like to search for this file yourself?", vbYesNo + vbExclamation)
-    If msg = vbYes Then
-        PlayMp3
-        Exit Sub
-    Else
-        Exit Sub
-    End If
-End If
-
-If lIndex = 0 Then
-    Exit Sub
-Else
-    Select Case lFiletype
-    Case Mp3_File
-        If frmMain.ctlMp3Player.GetHasTag = True Then
-            'frmDDE.ddemIRC "10:12( 10Title: 12" & frmMain.ctlMp3Player.GetTitle & "10, Artist: 12" & frmMain.ctlMp3Player.GetArtist & ", 9[14" & frmMain.ctlMp3Player.GetGenreString(frmMain.ctlMp3Player.GetGenre) & "9] 0.11aud15ic14a" & " 12)10:"
-        Else
-            'frmDDE.ddemIRC "10:12( 10Playing: 12" & lPlaylist.pFiles(lIndex).fFilename & "9] 0.11aud15ic14a" & " 12)10:"
-        End If
-        lInterface.iStoped = False
-        frmMain.tmrFake.Enabled = True
-        lPlaylist.pCurrent = FindPlaylistIndex(GetFileTitle(lPlaylist.pFiles(lIndex).fFilename))
-        frmMain.imgSmPlay.Picture = frmGFX.imgSmStop1.Picture
-        frmMain.ctlMp3Player.Play
-        lInterface.iPlaying = True
-        frmMain.tmrStreamTitle.Enabled = True
-    Case Wav_File
-        'frmMain.tmrFake.Enabled = True
-        lPlaylist.pCurrent = FindPlaylistIndex(GetFileTitle(lPlaylist.pFiles(lIndex).fFilename))
-        frmMain.imgSmPlay.Picture = frmGFX.imgSmStop1.Picture
-        sndPlaySound lPlaylist.pFiles(lIndex).fFilepath & "\" & lPlaylist.pFiles(lIndex).fFilename, SND_ASYNC
-
-        lInterface.iPlaying = True
-        frmMain.tmrStreamTitle.Enabled = True
-    End Select
-End If
-End Sub
-
+    For i = 1 To Len(strSource)
+        Select Case Asc(Mid(strSource, i, 1))
+            Case 48 To 57, 65 To 90, 97 To 122: 'include 32 if you want to include space
+                strResult = strResult & Mid(strSource, i, 1)
+        End Select
+    Next
+    AlphaNumericOnly = strResult
+End Function
 Public Function PromptFolder() As String
 On Local Error Resume Next
-
 Dim msg As String
-lFileshare.fReturn = ""
 With frmFolder
     .Label1.Caption = "Please select a folder"
     .Dir1.Path = CurDir
     .Show 1
 End With
-msg = lFileshare.fReturn
-lFileshare.fReturn = ""
 If Len(msg) <> 0 Then
     PromptFolder = msg
 End If
@@ -664,7 +644,7 @@ Dim i As Integer
 
 i = frmMain.mnuRecient.Count
 If Len(lFileTitle) <> 0 Then
-'    frmMain.mnuRecient(0).Visible = False
+    frmMain.mnuRecient(0).Visible = False
     Load frmMain.mnuRecient(i)
     frmMain.mnuRecient(i).Visible = True
     frmMain.mnuRecient(i).Caption = "::" & UCase(Left(lFileTitle, Len(lFileTitle) - 4)) & "::"
@@ -684,8 +664,9 @@ Case Mp3_File
     If Len(msg) <> 0 Then
         msg2 = msg
         DoEvents
-        frmMain.ctlMp3Player.Stop
-        frmMain.ctlMp3Player.Close
+        frmMain.Mp3OCX1.Stop
+        'frmMain.ctlMp3Player.Stop
+        'frmMain.ctlMp3Player.Close
         PromptFile = msg
     End If
 Case Wav_File
@@ -694,8 +675,9 @@ Case Wav_File
     If Len(msg) <> 0 Then
         msg2 = msg
         DoEvents
-        frmMain.ctlMp3Player.Stop
-        frmMain.ctlMp3Player.Close
+        frmMain.Mp3OCX1.Stop
+        'frmMain.ctlMp3Player.Stop
+        'frmMain.ctlMp3Player.Close
         PromptFile = msg
     End If
 End Select
@@ -732,15 +714,15 @@ Public Sub SetPlayerShape()
 Dim i As Integer
 
 Dim rgn As Long, rgn1 As Long, rgn2 As Long, rgn3 As Long, rgn4 As Long, rgn5 As Long, rgn6 As Long, rgn7 As Long, tmp As Long
-Dim x As Long, Y As Long
+Dim X As Long, Y As Long
 
-x = lMainWndSettings.wWindowBorder
+X = lMainWndSettings.wWindowBorder
 Y = lMainWndSettings.wTitleBarHeight
 
-rgn = CreateEllipticRgn(x + 14, Y - 3, x + 172, Y + 152)
-rgn1 = CreateEllipticRgn(x - 1.2, Y + 68, x + 190, Y + 234)
-rgn2 = CreateEllipticRgn(x + 72, Y + 71, x + 237, Y + 227)
-rgn3 = CreateEllipticRgn(x + 26, Y + 145, x + 161 + 23, Y + 153 + 150)
+rgn = CreateEllipticRgn(X + 14, Y - 3, X + 172, Y + 152)
+rgn1 = CreateEllipticRgn(X - 1.2, Y + 68, X + 190, Y + 234)
+rgn2 = CreateEllipticRgn(X + 72, Y + 71, X + 237, Y + 227)
+rgn3 = CreateEllipticRgn(X + 26, Y + 145, X + 161 + 23, Y + 153 + 150)
 
 tmp = CombineRgn(rgn, rgn, rgn1, RGN_OR)
 tmp = CombineRgn(rgn, rgn, rgn2, RGN_OR)
@@ -755,19 +737,19 @@ Public Sub SetUtilityShape()
 Dim i As Integer
 
 Dim rgn As Long, rgn1 As Long, rgn2 As Long, rgn3 As Long, rgn4 As Long, rgn5 As Long, rgn6 As Long, rgn7 As Long, tmp As Long
-Dim x As Long, Y As Long
+Dim X As Long, Y As Long
 
-x = lMainWndSettings.wWindowBorder
+X = lMainWndSettings.wWindowBorder
 Y = lMainWndSettings.wTitleBarHeight
 
-rgn = CreateRoundRectRgn(x + 38, Y + 249, x + 288, Y + 268, 10, 10)
-rgn1 = CreateRoundRectRgn(x + 286, Y - 3, x + 324, Y + 231, 40, 40)
-rgn2 = CreateRectRgn(x + 286, Y + 192, x + 30 + 286, Y + 57 + 192)
-rgn3 = CreateEllipticRgn(x + 286, Y + 228, x + 288 + 50, Y + 41 + 232)
-rgn4 = CreateRoundRectRgn(x + 1, Y - 3, x + 300, Y + 34, 30, 30)
-rgn5 = CreateRoundRectRgn(x + 35, Y + -100, x + 287, Y + 16, 20, 20)
-rgn6 = CreateRectRgn(x + 35, Y + 20, x + 249 + 40, Y + 209 + 40)
-rgn7 = CreateRoundRectRgn(x - 1, Y + 20, x + 70, Y + 250, 20, 20)
+rgn = CreateRoundRectRgn(X + 38, Y + 249, X + 288, Y + 268, 10, 10)
+rgn1 = CreateRoundRectRgn(X + 286, Y - 3, X + 324, Y + 231, 40, 40)
+rgn2 = CreateRectRgn(X + 286, Y + 192, X + 30 + 286, Y + 57 + 192)
+rgn3 = CreateEllipticRgn(X + 286, Y + 228, X + 288 + 50, Y + 41 + 232)
+rgn4 = CreateRoundRectRgn(X + 1, Y - 3, X + 300, Y + 34, 30, 30)
+rgn5 = CreateRoundRectRgn(X + 35, Y + -100, X + 287, Y + 16, 20, 20)
+rgn6 = CreateRectRgn(X + 35, Y + 20, X + 249 + 40, Y + 209 + 40)
+rgn7 = CreateRoundRectRgn(X - 1, Y + 20, X + 70, Y + 250, 20, 20)
 
 tmp = CombineRgn(rgn, rgn, rgn1, RGN_OR)
 tmp = CombineRgn(rgn, rgn, rgn2, RGN_OR)
@@ -787,11 +769,11 @@ Public Sub SetAboutShape()
 Dim i As Integer
 
 Dim rgn As Long, rgn1 As Long, rgn2 As Long, rgn3 As Long, rgn4 As Long, rgn5 As Long, rgn6 As Long, rgn7 As Long, tmp As Long
-Dim x As Long, Y As Long
+Dim X As Long, Y As Long
 
-x = lMainWndSettings.wWindowBorder
+X = lMainWndSettings.wWindowBorder
 Y = lMainWndSettings.wTitleBarHeight
-rgn = CreateRectRgn(x - 1, Y - 2, x + 200, Y + 229)
+rgn = CreateRectRgn(X - 1, Y - 2, X + 200, Y + 229)
 frmMain.Width = 3200
 frmMain.Height = 4200
 
