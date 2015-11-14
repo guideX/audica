@@ -6,7 +6,7 @@ Begin VB.Form frmMain
    Caption         =   "Audica"
    ClientHeight    =   7650
    ClientLeft      =   45
-   ClientTop       =   330
+   ClientTop       =   630
    ClientWidth     =   7230
    BeginProperty Font 
       Name            =   "Tahoma"
@@ -161,7 +161,6 @@ Begin VB.Form frmMain
    End
    Begin VB.Menu mnuMain 
       Caption         =   "Hidden"
-      Visible         =   0   'False
       Begin VB.Menu mnuAudica 
          Caption         =   "::NEXGEN><AUDICA::"
          Checked         =   -1  'True
@@ -352,6 +351,7 @@ Begin VB.Form frmMain
          Begin VB.Menu mnuPlaylistEditor 
             Caption         =   "::PLAYLIST.EDITOR::"
             Enabled         =   0   'False
+            Visible         =   0   'False
          End
          Begin VB.Menu mnuSep3987932 
             Caption         =   "-"
@@ -471,36 +471,37 @@ If lInterface.iStoped = False And lPlaylist.pCount <> 0 And lPlaylist.pCount <> 
 End Sub
 
 Private Sub Form_Load()
-On Error Resume Next
+On Error GoTo ErrHandler
 Dim i As Integer, msg As String, X As Integer
+If (Command = "mirc") Then
+    ' Load program into mIRC
+    Dim mircHwnd As Long
+    Dim s As String
+    mircHwnd = FindWindow(s, "mIRC Control Panel")
+    SetParent Me.hwnd, mircHwnd
+End If
+SetInterface eAboutWindow, False, True
 Me.BackColor = vbBlack
 Mp3OCX1.OscilloType = otSpectrum
 Mp3OCX1.BackColor = 0
 Mp3OCX1.RightChanColor = &H800000
 Mp3OCX1.LeftChanColor = &HFF0000
 Mp3OCX1.Bands = 14
-lInterface.iOS = GetSetting(App.Title, "Settings", "OS", 0)
-lSettings.sOutputDevice = GetSetting(App.Title, "Settings", "OutputDevice", 100)
-SetInterface eAboutWindow, False, True
-Pause 2
-FadeOut
-LoadPlaylist
-Pause 0.2
+LoadSettings
+'Pause 0.5
 imgSlider.Left = 186
 imgSlider.Visible = True
-InitDisplay
 Dim lfname As String
-If (Command <> "mirc") Then
-    lfname = Command
-    If Len(lfname) <> 0 Then
-        PlayMp3 lfname
-    End If
-Else
-    Dim mircHwnd As Long
-    Dim s As String
-    mircHwnd = FindWindow(s, "mIRC Control Panel")
-    SetParent Me.hwnd, mircHwnd
+lfname = Command
+If Len(lfname) <> 0 Then
+    PlayMp3 lfname
 End If
+FadeOut
+InitDisplay
+AppendToPlaylist lSettings.sLastPlaylist
+Exit Sub
+ErrHandler:
+    MsgBox "Error: " & Err.Description
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
@@ -513,11 +514,11 @@ End
 End Sub
 
 Private Sub imgLayout_DblClick()
-If lInterface.iCurrentLayout = eSmWindow Then
-    SetInterface eUtilityWindow, True
-Else
-    SetInterface eSmWindow, True
-End If
+'If lInterface.iCurrentLayout = eSmWindow Then
+    'SetInterface eUtilityWindow, True
+'Else
+    'SetInterface eSmWindow, True
+'End If
 End Sub
 
 Private Sub imgLayout_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -568,7 +569,7 @@ End Sub
 
 Private Sub imgSmOptions_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 1 Then
-    SetInterface eUtilityWindow, True
+    'SetInterface eUtilityWindow, True
     imgSmOptions.Picture = frmGFX.imgSmOptions1.Picture
 End If
 End Sub
@@ -677,6 +678,10 @@ Private Sub mnuOpenMp3Directory_Click()
 PlayDirectory Mp3_File
 End Sub
 
+Private Sub mnuPause_Click()
+Mp3OCX1.Pause
+End Sub
+
 Private Sub mnuPlayFile_Click()
 sndPlaySound OpenDialog(frmMain, "Wav Files (*.wav)|*.wav|All Files (*.*)|*.*", "Open", CurDir), SND_ASYNC
 End Sub
@@ -696,7 +701,7 @@ PlayDirectory Wav_File
 End Sub
 
 Private Sub mnuPower_Click()
-End
+Unload frmMain
 End Sub
 
 Private Sub mnuRandomize_Click()
@@ -709,10 +714,14 @@ End Sub
 
 Private Sub mnuRecient_Click(Index As Integer)
 Dim i As Integer, msg As String
+
+CloseMp3Player
+'PlayMp3
+
 msg = Left(mnuRecient(Index).Caption, Len(mnuRecient(Index).Caption) - 2)
 msg = LCase(Right(msg, Len(msg) - 2))
 i = FindPlaylistIndex(msg)
-OpenFile lPlaylist.pFiles(i).fFilepath & "\" & lPlaylist.pFiles(i).fFilename
+OpenFile lPlaylist.pFiles(i).fFilepath & lPlaylist.pFiles(i).fFilename
 Playfile i, lPlaylist.pFiles(i).fFiletype
 End Sub
 

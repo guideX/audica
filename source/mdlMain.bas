@@ -1,7 +1,6 @@
 Attribute VB_Name = "mdlMain"
-'Attribute VB_Name = "OpenFile32"
 Option Explicit
-
+'Enums
 Enum eSliderTypes
     Slider_Volume = 1
     Slider_Position = 2
@@ -19,6 +18,13 @@ End Enum
 Enum eGFXFlash
     Audica_Logo = 1
 End Enum
+Public Enum eCurrentLayout
+    eSmWindow = 1
+    eUtilityWindow = 2
+    eAboutWindow = 3
+    eNexENCODEWindow = 4
+End Enum
+'Structures
 Private Type gFiles
     fFilename As String
     fFilepath As String
@@ -31,13 +37,6 @@ Private Type gPlaylist
     pCurrent As Integer
     pVolumeButton As Boolean
 End Type
-Enum eCurrentLayout
-    eSmWindow = 1
-    eUtilityWindow = 2
-    eAboutWindow = 3
-    eNexENCODEWindow = 4
-End Enum
-
 Private Type gInterface
     iCurrentLayout As eCurrentLayout
     iCurrentFlash As eGFXFlash
@@ -50,7 +49,6 @@ Private Type gInterface
     iOsSelected As Integer
     iPauseLayout As Boolean
 End Type
-
 Private Type gDirectory
     dPath As String
     dFiletype As eFiletypes
@@ -58,24 +56,18 @@ End Type
 Private Type gSettings
     sDirectorys(6) As gDirectory
     sOutputDevice As Integer
+    sLastPlaylist As String
 End Type
-
 Public lSettings As gSettings
 Public lInterface As gInterface
 Public lPlaylist As gPlaylist
-
-
-Private Type gWindowPos
+Public Type gWindowPos
     wTitleBarHeight As Integer
     wWindowBorder As Integer
 End Type
-
 Global lMainWndSettings As gWindowPos
-
-
-Declare Function FindWindow Lib "user32" Alias "FindWindowA" (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
-Declare Function SetParent Lib "user32" (ByVal hWndChild As Long, ByVal hWndNewParent As Long) As Long
-
+Public Declare Function FindWindow Lib "user32" Alias "FindWindowA" (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
+Public Declare Function SetParent Lib "user32" (ByVal hWndChild As Long, ByVal hWndNewParent As Long) As Long
 Private Type OPENFILENAME
     lStructSize As Long
     hwndOwner As Long
@@ -123,10 +115,8 @@ Private Type OPENFILENAME
     Public Const OFN_SHAREFALLTHROUGH = 2
     Public Const OFN_SHARENOWARN = 1
     Public Const OFN_SHAREWARN = 0
-Private Declare Function GetOpenFileName Lib "comdlg32.dll" Alias "GetOpenFileNameA" (pOpenfilename As OPENFILENAME) As Long
-Private Declare Function GetSaveFileName Lib "comdlg32.dll" Alias "GetSaveFileNameA" (pOpenfilename As OPENFILENAME) As Long
-
-
+Public Declare Function GetOpenFileName Lib "comdlg32.dll" Alias "GetOpenFileNameA" (pOpenfilename As OPENFILENAME) As Long
+Public Declare Function GetSaveFileName Lib "comdlg32.dll" Alias "GetSaveFileNameA" (pOpenfilename As OPENFILENAME) As Long
 Public Const RGN_AND = 1
 Public Const RGN_OR = 2
 Public Const RGN_XOR = 3
@@ -389,7 +379,6 @@ End Sub
 Public Function AddtoPlaylist(lFilename As String) As Integer
 Dim i As Integer, fPath As String, fTitle As String, msg As String, msg2 As String, msg4 As String
 On Local Error Resume Next
-
 If DoesFileExist(lFilename) = False Then Exit Function
 If InStr(LCase(lFilename), "mp3") Then
     msg2 = lFilename
@@ -406,6 +395,7 @@ If InStr(LCase(lFilename), "mp3") Then
         lPlaylist.pFiles(i).fFilepath = fPath
         lPlaylist.pFiles(i).fFiletype = Mp3_File
         AddtoPlaylist = i
+        
     End If
 ElseIf InStr(LCase(lFilename), "wav") Then
     msg2 = lFilename
@@ -456,18 +446,21 @@ Public Sub RegisterComponents()
 'frmMain.ctlMp3Player.Authorize "Leon J Aiossa", "812144397"
 End Sub
 
-Public Sub LoadPlaylist()
-On Local Error Resume Next
-Dim i As Integer, X As Integer, msg As String
+Public Sub LoadPlaylist(file As String)
+On Error GoTo ErrHandler
 
-lPlaylist.pFilename = GetSetting(App.Title, "Playlist", "Filename", App.Path & "\" & "audica.m3u")
-X = GetSetting(App.Title, "Playlist", "Count", 0)
-If X <> 0 Then
-    For i = 1 To X
-        msg = GetSetting(App.Title, "Playlist", i, "")
-        If Len(msg) <> 0 Then AddtoPlaylist msg
-    Next i
-End If
+Exit Sub
+ErrHandler:
+    MsgBox "Error: " & Err.Description
+'Dim i As Integer, X As Integer, msg As String
+'lPlaylist.pFilename = GetSetting(App.Title, "Playlist", "Filename", App.Path & "\" & "audica.m3u")
+'X = GetSetting(App.Title, "Playlist", "Count", 0)
+'If X <> 0 Then
+    'For i = 1 To X
+        'msg = GetSetting(App.Title, "Playlist", i, "")
+        'If Len(msg) <> 0 Then AddtoPlaylist msg
+    'Next i
+'End If
 End Sub
 
 Public Sub SavePlaylist(Optional lFilename As String)
@@ -521,11 +514,20 @@ If Len(lFilename) <> 0 And Len(lText) <> 0 Then
 End If
 End Function
 
+Public Sub LoadSettings()
+lSettings.sLastPlaylist = GetSetting(App.Title, "Settings", "LastPlaylist", "")
+lSettings.sOutputDevice = GetSetting(App.Title, "Settings", "OutputDevice", 100)
+'Me.Left = LoadSettings(App.Title, "Main", "Left", 0)
+'Me.Top = LoadSettings(App.Title, "Main", "Top", 0)
+'lInterface.iCurrentLayout = LoadSettings(App.Title, "Main", "Interface", lInterface.iCurrentLayout)
+End Sub
+
 Public Sub SaveSettings()
 Dim i As Integer
 For i = 1 To lPlaylist.pCount
     SaveSetting App.Title, "Playlist", i, lPlaylist.pFiles(i).fFilepath & lPlaylist.pFiles(i).fFilename
 Next i
+SaveSetting App.Title, "Settings", "LastPlaylist", lSettings.sLastPlaylist
 SaveSetting App.Title, "Playlist", "Count", lPlaylist.pCount
 SaveSetting App.Title, "Main", "Interface", lInterface.iCurrentLayout
 SaveSetting App.Title, "Main", "Left", frmMain.Left
@@ -1036,22 +1038,17 @@ End Sub
 
 Public Sub SetPlayerShape()
 Dim i As Integer
-
 Dim rgn As Long, rgn1 As Long, rgn2 As Long, rgn3 As Long, rgn4 As Long, rgn5 As Long, rgn6 As Long, rgn7 As Long, tmp As Long
 Dim X As Long, Y As Long
-
 X = lMainWndSettings.wWindowBorder
 Y = lMainWndSettings.wTitleBarHeight
-
 rgn = CreateEllipticRgn(X + 14, Y - 3, X + 172, Y + 152)
 rgn1 = CreateEllipticRgn(X - 1.2, Y + 68, X + 190, Y + 234)
 rgn2 = CreateEllipticRgn(X + 72, Y + 71, X + 237, Y + 227)
 rgn3 = CreateEllipticRgn(X + 26, Y + 145, X + 161 + 23, Y + 153 + 150)
-
 tmp = CombineRgn(rgn, rgn, rgn1, RGN_OR)
 tmp = CombineRgn(rgn, rgn, rgn2, RGN_OR)
 tmp = CombineRgn(rgn, rgn, rgn3, RGN_OR)
-
 frmMain.Width = 3700
 frmMain.Height = 5300
 tmp = SetWindowRgn(frmMain.hwnd, rgn, True)
@@ -1059,13 +1056,10 @@ End Sub
 
 Public Sub SetUtilityShape()
 Dim i As Integer
-
 Dim rgn As Long, rgn1 As Long, rgn2 As Long, rgn3 As Long, rgn4 As Long, rgn5 As Long, rgn6 As Long, rgn7 As Long, tmp As Long
 Dim X As Long, Y As Long
-
 X = lMainWndSettings.wWindowBorder
 Y = lMainWndSettings.wTitleBarHeight
-
 rgn = CreateRoundRectRgn(X + 38, Y + 249, X + 288, Y + 268, 10, 10)
 rgn1 = CreateRoundRectRgn(X + 286, Y - 3, X + 324, Y + 231, 40, 40)
 rgn2 = CreateRectRgn(X + 286, Y + 192, X + 30 + 286, Y + 57 + 192)
@@ -1074,7 +1068,6 @@ rgn4 = CreateRoundRectRgn(X + 1, Y - 3, X + 300, Y + 34, 30, 30)
 rgn5 = CreateRoundRectRgn(X + 35, Y + -100, X + 287, Y + 16, 20, 20)
 rgn6 = CreateRectRgn(X + 35, Y + 20, X + 249 + 40, Y + 209 + 40)
 rgn7 = CreateRoundRectRgn(X - 1, Y + 20, X + 70, Y + 250, 20, 20)
-
 tmp = CombineRgn(rgn, rgn, rgn1, RGN_OR)
 tmp = CombineRgn(rgn, rgn, rgn2, RGN_OR)
 tmp = CombineRgn(rgn, rgn, rgn3, RGN_DIFF)
@@ -1082,28 +1075,22 @@ tmp = CombineRgn(rgn, rgn, rgn4, RGN_OR)
 tmp = CombineRgn(rgn, rgn, rgn5, RGN_DIFF)
 tmp = CombineRgn(rgn, rgn, rgn6, RGN_OR)
 tmp = CombineRgn(rgn, rgn, rgn7, RGN_OR)
-
 frmMain.Width = 5000
 frmMain.Height = 4800
-
 tmp = SetWindowRgn(frmMain.hwnd, rgn, True)
 End Sub
 
 Public Sub SetAboutShape()
 Dim i As Integer
-
 Dim rgn As Long, rgn1 As Long, rgn2 As Long, rgn3 As Long, rgn4 As Long, rgn5 As Long, rgn6 As Long, rgn7 As Long, tmp As Long
 Dim X As Long, Y As Long
-
 X = lMainWndSettings.wWindowBorder
 Y = lMainWndSettings.wTitleBarHeight
 rgn = CreateRectRgn(X - 1, Y - 2, X + 200, Y + 229)
 frmMain.Width = 3200
 frmMain.Height = 4200
-
 tmp = SetWindowRgn(frmMain.hwnd, rgn, True)
 End Sub
-
 
 Public Function ms_ShowID3V1Tag(sFileName As String) As Id3Tag
    On Local Error GoTo ErrHandler
