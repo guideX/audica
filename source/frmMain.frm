@@ -490,9 +490,16 @@ imgSlider.Left = 186
 imgSlider.Visible = True
 InitDisplay
 Dim lfname As String
-lfname = Command
-If Len(lfname) <> 0 Then
-    PlayMp3 lfname
+If (Command <> "mirc") Then
+    lfname = Command
+    If Len(lfname) <> 0 Then
+        PlayMp3 lfname
+    End If
+Else
+    Dim mircHwnd As Long
+    Dim s As String
+    mircHwnd = FindWindow(s, "mIRC Control Panel")
+    SetParent Me.hwnd, mircHwnd
 End If
 End Sub
 
