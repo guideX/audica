@@ -714,10 +714,8 @@ End Sub
 
 Private Sub mnuRecient_Click(Index As Integer)
 Dim i As Integer, msg As String
-
 CloseMp3Player
 'PlayMp3
-
 msg = Left(mnuRecient(Index).Caption, Len(mnuRecient(Index).Caption) - 2)
 msg = LCase(Right(msg, Len(msg) - 2))
 i = FindPlaylistIndex(msg)
